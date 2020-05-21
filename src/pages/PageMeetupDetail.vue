@@ -76,11 +76,7 @@
                 <!-- Joined People Images Here -->
                 <div v-for="person in meetup.joinedPeople" :key="person._id" class="column is-3">
                   <figure class="image is-64x64">
-                    <img
-                      class="is-rounded"
-                      :src="person.avatar"
-                      alt="Image"
-                    />
+                    <img class="is-rounded" :src="person.avatar" alt="Image" />
                   </figure>
                 </div>
               </div>
@@ -115,10 +111,7 @@
                 <article v-for="post in thread.posts" :key="post._id" class="media post-item">
                   <figure class="media-left is-rounded user-image">
                     <p class="image is-32x32">
-                      <img
-                        class="is-rounded"
-                        :src="post.user.avatar"
-                      />
+                      <img class="is-rounded" :src="post.user.avatar" />
                     </p>
                   </figure>
                   <div class="media-content">
@@ -147,29 +140,22 @@
 </template>
 
 <script>
-import axios from "axios";
 export default {
-  data() {
-    return {
-      meetup: {},
-      threads: []
-    };
+  computed: {
+      meetup () {
+        return this.$store.state.meetup
+      },
+      threads () {
+        return this.$store.state.threads
+      },
+      meetupCreator () {
+        return this.meetup.meetupCreator || {}
+      }
   },
   created() {
     const meetupId = this.$route.params.id;
-
-    axios.get(`/api/v1/meetups/${meetupId}`).then(res => {
-        this.meetup = res.data;
-    });
-
-    axios.get(`/api/v1/threads?meetupId=${meetupId}`).then(res => {
-        this.threads = res.data;
-    })
-  },
-  computed: {
-    meetupCreator() {
-      return this.meetup.meetupCreator || "";
-    }
+    this.$store.dispatch("fetchMeetupById", meetupId)
+    this.$store.dispatch("fetchThreads", meetupId)
   }
 };
 </script>

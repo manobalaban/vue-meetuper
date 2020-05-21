@@ -3,15 +3,18 @@
     <AppHero />
     <div class="container">
       <section class="section">
-      <div class="m-b-lg">
-        <h1 class="title is-inline">Featured Meetups in "Location"</h1>
-        <AppDropdown />
-        <button class="button is-primary is-pulled-right m-r-sm">Create Meetups</button>
-        <button class="button is-primary is-pulled-right m-r-sm">All</button>
-      </div>
-      <div class="row columns is-multiline">
-        <MeetupItem v-for="meetup in meetups" :key="meetup._id" :meetup="meetup" />
-      </div>
+        <div class="m-b-lg">
+          <h1 class="title is-inline">Featured Meetups in "Location"</h1>
+          <AppDropdown />
+          <button class="button is-primary is-pulled-right m-r-sm">Create Meetups</button>
+          <router-link
+            :to="{name: 'PageMeetupFind'}"
+            class="button is-primary is-pulled-right m-r-sm"
+          >All</router-link>
+        </div>
+        <div class="row columns is-multiline">
+          <MeetupItem v-for="meetup in meetups" :key="meetup._id" :meetup="meetup" />
+        </div>
       </section>
       <section class="section">
         <div>
@@ -26,32 +29,27 @@
 </template>
 
 <script>
-import axios from "axios"
-import CategoryItem from "@/components/CategoryItem"
-import MeetupItem from "@/components/MeetupItem"
-  export default {
-    components: {
-      CategoryItem, MeetupItem
+import CategoryItem from "@/components/CategoryItem";
+import MeetupItem from "@/components/MeetupItem";
+export default {
+  components: {
+    CategoryItem,
+    MeetupItem
+  },
+  computed: {
+    meetups() {
+      return this.$store.state.meetups
     },
-    data() {
-      return {
-        meetups: [],
-        categories: []
-      }
-    },
-    created() {
-      axios.get("/api/v1/meetups")
-      .then(res => {
-        this.meetups = res.data
-      })
-      axios.get("/api/v1/categories")
-      .then(res => {
-        this.categories = res.data
-      })
+    categories() {
+      return this.$store.state.categories
     }
+  },
+  created() {
+    this.$store.dispatch("fetchMeetups");
+    this.$store.dispatch("fetchCategories");
   }
+};
 </script>
 
 <style scoped>
-  
 </style>
