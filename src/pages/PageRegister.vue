@@ -161,8 +161,12 @@ export default {
   },
   validations: {
     form: {
-      username: { required },
-      name: { required },
+      username: { 
+        // required 
+      },
+      name: { 
+        // required 
+      },
       email: { required, email },
       avatar: {url, supportedFileType},
       password: { required, minLength: minLength(6) },
@@ -172,7 +176,11 @@ export default {
   methods: {
     register() {
       this.$v.form.$touch();
-      this.$store.dispatch("auth/registerUser", this.form);
+      this.$store.dispatch("auth/registerUser", this.form)
+      .then(() => this.$router.push("/login"))
+      .catch(errorMessage => {
+        this.$toasted.error(errorMessage, {duration: 5000})
+      })
     }
   }
 };

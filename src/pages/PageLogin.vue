@@ -90,7 +90,11 @@ export default {
   methods: {
     login() {
       this.$v.form.$touch()
-      this.$store.dispatch("auth/loginWithEmailAndPassword", this.form);
+      this.$store.dispatch("auth/loginWithEmailAndPassword", this.form)
+      .then(() => this.$router.push("/"))
+      .catch(errorMessage => {
+        this.$toasted.error(errorMessage, {duration: 5000})
+      })
     }
   }
 };
