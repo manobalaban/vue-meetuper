@@ -94,7 +94,12 @@
                 :disabled="true"
                 class="button is-warning"
               >You need authenticate in order to join</button>
-              <ThreadCreateModal v-if="isMember || isMeetupOwner" :btnTitle="`Wlcome ${authUser.username}, start a new thread`" :title="'Create Thread'" />
+              <ThreadCreateModal
+                v-if="isMember || isMeetupOwner"
+                @threadSubmitted="createThread"
+                :btnTitle="`Wlcome ${authUser.username}, start a new thread`"
+                :title="'Create Thread'"
+              />
             </div>
             <!-- Thread List START -->
             <div class="content is-medium">
@@ -178,12 +183,16 @@ export default {
   },
   methods: {
     ...mapActions("meetups", ["fetchMeetupById"]),
-    ...mapActions("threads", ["fetchThreads"]),
+    ...mapActions('threads', ['fetchThreads', 'postThread']),
     joinMeetup() {
       this.$store.dispatch("meetups/joinMeetup", this.meetup._id);
     },
     leaveMeetup() {
       this.$store.dispatch("meetups/leaveMeetup", this.meetup._id);
+    },
+    createThread ({title, done}) {
+        this.postThread({title, meetupId: this.meetup._id})
+        .then(() => done())
     }
   }
 };
